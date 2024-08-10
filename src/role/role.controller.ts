@@ -20,28 +20,30 @@ import { RolePermissionGuard } from './guards/permission.guard';
 @ApiTags('Roles')
 @ApiBearerAuth()
 @Controller('role')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolePermissionGuard)
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Post()
+  @Permission('CREATE_ROLE')
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.create(createRoleDto);
   }
 
   @Get()
   @Permission('READ_ROLE')
-  @UseGuards(RolePermissionGuard)
   findAll() {
     return this.roleService.findAll();
   }
 
   @Get(':id')
+  @Permission('READ_ROLE')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.roleService.findOne(id);
+    return this.roleService.findById(id);
   }
 
   @Patch(':id')
+  @Permission('UPDATE_ROLE')
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateRoleDto: UpdateRoleDto,
@@ -50,6 +52,7 @@ export class RoleController {
   }
 
   @Delete(':id')
+  @Permission('DELETE_ROLE')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.roleService.remove(id);
   }

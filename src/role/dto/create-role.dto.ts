@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateRoleDto {
@@ -8,6 +9,9 @@ export class CreateRoleDto {
   })
   @IsString({ message: 'Name must be a string' })
   @MinLength(3, { message: 'Name must be at least 3 characters long' })
+  @Transform(({ value }: { value: string }) =>
+    value.toUpperCase().trim().replaceAll(' ', '_'),
+  )
   name: string;
 
   @ApiProperty({

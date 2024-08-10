@@ -7,15 +7,30 @@ import { Role } from './entities/role.entity';
 @Injectable()
 export class RoleService {
   constructor(private db: DatabaseService) {}
-  create(createRoleDto: CreateRoleDto) {
+  async create(createRoleDto: CreateRoleDto): Promise<Role> {
+    const role = await this.findByName(createRoleDto.name, false);
+    if (role) {
+      throw new BadRequestException('Role already exists');
+    }
+
     return this.db.role.create({ data: createRoleDto });
   }
 
-  findAll(): Promise<Role[]> {
+  async findAll(): Promise<Role[]> {
     return this.db.role.findMany();
   }
 
-  async findOne(id: string, raiseError = true): Promise<Role | null> {
+  async findByName(name: string, raiseError = true): Promise<Role | null> {
+    const role = await this.db.role.findUnique({ where: { name } });
+
+    if (!role && raiseError) {
+      throw new BadRequestException('Role not found');
+    }
+
+    return role;
+  }
+
+  async findById(id: string, raiseError = true): Promise<Role | null> {
     const role = await this.db.role.findUnique({ where: { id } });
 
     if (!role && raiseError) {
@@ -26,8 +41,7 @@ export class RoleService {
   }
 
   async update(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
-    await this.findOne(id);
-
+    await this.findById(id);
     const role = await this.db.role.update({
       where: { id },
       data: updateRoleDto,
@@ -37,7 +51,7 @@ export class RoleService {
   }
 
   async remove(id: string) {
-    await this.findOne(id);
+    await this.findById(id);
 
     await this.db.role.delete({ where: { id } });
 
