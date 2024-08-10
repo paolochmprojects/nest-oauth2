@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  name         String
+  email        String         @unique
+  isSuperAdmin Boolean        @default(false)
+  Account      Account?
+  roleId       String?
+  role         Role?          @relation(fields: [roleId], references: [id])
+  Profile      Profile?
+  active       Boolean        @default(true)
+  blocked      Boolean        @default(false)
+  RefreshToken RefreshToken[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Profile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User?    @relation(fields: [userId], references: [id])
+  bio         String?
+  address     String?
+  country     String?
+  city        String?
+  zipCode     String?
+  phoneNumber String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  User        User[]
+}
+
+enum Action {
+  ALL
+  CREATE
+  READ
+  UPDATE
+  DELETE
+}
+
+enum ModelName {
+  USER
+  ACCOUNT
+  ROLE
+  PERMISSION
+  REFRESH_TOKEN
+}
+
+model Permission {
+  id        String    @id @default(uuid())
+  name      String
+  model     ModelName
+  action    Action
+  roles     Role[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum Provider {
+  GOOGLE
+}
+
+model Account {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  type         Provider
+  providerId   String
+  user         User?    @relation(fields: [userId], references: [id])
+  token        String
+  refreshToken String?
+  expiresAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  token     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
