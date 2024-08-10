@@ -18,13 +18,13 @@ model User {
   name         String
   email        String         @unique
   isSuperAdmin Boolean        @default(false)
-  Account      Account?
+  account      Account?
   roleId       String?
   role         Role?          @relation(fields: [roleId], references: [id])
-  Profile      Profile?
+  profile      Profile?
   active       Boolean        @default(true)
   blocked      Boolean        @default(false)
-  RefreshToken RefreshToken[]
+  refreshToken RefreshToken[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 }
@@ -44,39 +44,31 @@ model Profile {
 }
 
 model Role {
-  id          String       @id @default(uuid())
-  name        String
-  description String?
-  permissions Permission[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  User        User[]
+  id             String           @id @default(uuid())
+  name           String           @unique
+  description    String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  User           User[]
+  RolePermission RolePermission[]
 }
 
-enum Action {
-  ALL
-  CREATE
-  READ
-  UPDATE
-  DELETE
-}
-
-enum ModelName {
-  USER
-  ACCOUNT
-  ROLE
-  PERMISSION
-  REFRESH_TOKEN
+model RolePermission {
+  id           String      @id @default(uuid())
+  roleId       String
+  role         Role?       @relation(fields: [roleId], references: [id])
+  permissionId String
+  permission   Permission? @relation(fields: [permissionId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model Permission {
-  id        String    @id @default(uuid())
-  name      String
-  model     ModelName
-  action    Action
-  roles     Role[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id             String           @id @default(uuid())
+  name           String           @unique
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  RolePermission RolePermission[]
 }
 
 enum Provider {

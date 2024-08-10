@@ -10,10 +10,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt,guard';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleService } from './role.service';
-import { JwtAuthGuard } from 'src/auth/guards/jwt,guard';
+import { Permission } from './decorators/permission.decorator';
+import { RolePermissionGuard } from './guards/permission.guard';
 
 @ApiTags('Roles')
 @ApiBearerAuth()
@@ -28,6 +30,8 @@ export class RoleController {
   }
 
   @Get()
+  @Permission('READ_ROLE')
+  @UseGuards(RolePermissionGuard)
   findAll() {
     return this.roleService.findAll();
   }

@@ -22,6 +22,8 @@ async function bootstrap() {
     .setTitle('Oauth2 Api example with NestJS')
     .setDescription('OAuth2 Api example with NestJS')
     .setVersion('0.0.1')
+    .addTag('Status')
+    .addTag('Users')
     .addTag('Roles')
     .addTag('Auth')
     .addTag('Permissions')

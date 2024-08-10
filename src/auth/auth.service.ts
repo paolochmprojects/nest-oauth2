@@ -21,7 +21,10 @@ export class AuthService {
     refreshToken: string,
     profile: GoogleProfile,
   ): Promise<SignInGoogle | null> {
-    const user = await this.userService.getByEmail(profile.emails[0].value);
+    const user = await this.userService.getByEmail(
+      profile.emails[0].value,
+      false,
+    );
 
     if (user) {
       const token = await this.generateToken(user.id);
@@ -33,10 +36,13 @@ export class AuthService {
       };
     }
 
-    const newUser = await this.userService.createUser({
-      name: profile.displayName,
-      email: profile.emails[0].value,
-    });
+    const newUser = await this.userService.createUser(
+      {
+        name: profile.displayName,
+        email: profile.emails[0].value,
+      },
+      false,
+    );
 
     const token = await this.generateToken(newUser.id);
     const newRefreshToken = await this.generateRefreshToken(newUser.id);

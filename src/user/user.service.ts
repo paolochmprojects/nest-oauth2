@@ -12,6 +12,8 @@ import { User } from './entities/user.entity';
 export class UserService {
   constructor(private db: DatabaseService) {}
 
+  async getAll() {}
+
   async getByEmail(email: string, raiseError = true): Promise<User | null> {
     const user = await this.db.user.findUnique({
       where: {
@@ -26,10 +28,21 @@ export class UserService {
     return user;
   }
 
-  async getById(id: string, raiseError = true): Promise<User | null> {
+  async getById(
+    id: string,
+    raiseError = true,
+    withProfile = false,
+    withAccount = false,
+    withRole = false,
+  ): Promise<User | null> {
     const user = await this.db.user.findUnique({
       where: {
         id,
+      },
+      include: {
+        role: withRole,
+        profile: withProfile,
+        account: withAccount,
       },
     });
 
