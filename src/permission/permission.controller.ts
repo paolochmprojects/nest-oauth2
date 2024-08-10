@@ -1,6 +1,6 @@
 import {
-  Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -12,7 +12,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt,guard';
 import { Permission } from 'src/role/decorators/permission.decorator';
 import { RolePermissionGuard } from 'src/role/guards/permission.guard';
 import { PermissionService } from './permission.service';
-import { AddPermissionDto } from './dto/add-permission.dto';
 
 @ApiTags('Permissions')
 @ApiBearerAuth()
@@ -27,12 +26,24 @@ export class PermissionController {
     return this.permissionService.findAll();
   }
 
-  @Post(':roleId')
+  @Post(':permissionId/role/:roleId')
   @Permission('CREATE_ROLEPERMISSION')
   create(
+    @Param('permissionId', ParseUUIDPipe) permissionId: string,
     @Param('roleId', ParseUUIDPipe) roleId: string,
-    @Body() addPermissionDto: AddPermissionDto,
   ) {
-    return this.permissionService.addPerissionToRole(roleId, addPermissionDto);
+    return this.permissionService.addPerissionToRole(roleId, permissionId);
+  }
+
+  @Delete(':permissionId/role/:roleId')
+  @Permission('DELETE_ROLEPERMISSION')
+  remove(
+    @Param('permissionId', ParseUUIDPipe) permissionId: string,
+    @Param('roleId', ParseUUIDPipe) roleId: string,
+  ) {
+    return this.permissionService.removePermissionFromRole(
+      permissionId,
+      roleId,
+    );
   }
 }
