@@ -61,7 +61,7 @@ export class RoleService {
   }
 
   async remove(id: string) {
-    const role = await this.findById(id, false);
+    const role = await this.findById(id);
 
     if (role.name === 'USER')
       throw new BadRequestException('USER role cannot be deleted');
