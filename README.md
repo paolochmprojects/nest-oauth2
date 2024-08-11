@@ -24,12 +24,25 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This repo is an example of how tu use Passport and NestJS (Google auth).
 
 ## Installation
 
 ```bash
 $ npm install
+```
+
+## Migrations
+
+```bash
+$ npx prisma migrate deploy
+```
+
+## Seed
+The app need basic roles and persmission load in db.
+
+```bash
+$ npx prisma db seed
 ```
 
 ## Running the app
@@ -58,6 +71,9 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Api documentation
+
+[http://localhost:3000/api/](http://localhost:3000/api/) if port set defaults to 3000 or you can set it in .env file.
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
