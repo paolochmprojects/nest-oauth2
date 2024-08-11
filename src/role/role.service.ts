@@ -46,18 +46,25 @@ export class RoleService {
   }
 
   async update(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
-    await this.findById(id);
-    const role = await this.db.role.update({
+    const role = await this.findById(id);
+
+    if (role.name === 'USER' && updateRoleDto.name) {
+      updateRoleDto.name = undefined;
+    }
+
+    const roleUpdated = await this.db.role.update({
       where: { id },
       data: updateRoleDto,
     });
 
-    return role;
+    return roleUpdated;
   }
 
   async remove(id: string) {
-    await this.findById(id);
+    const role = await this.findById(id, false);
 
+    if (role.name === 'USER')
+      throw new BadRequestException('USER role cannot be deleted');
     await this.db.role.delete({ where: { id } });
 
     return { deleted: true };

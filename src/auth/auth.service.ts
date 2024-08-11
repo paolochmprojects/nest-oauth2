@@ -27,12 +27,21 @@ export class AuthService {
     );
 
     if (user) {
+      await this.db.account.update({
+        where: {
+          userId: user.id,
+        },
+        data: {
+          token: accessToken,
+          refreshToken: refreshToken,
+        },
+      });
       const token = await this.generateToken(user.id);
-      const refreshToken = await this.generateRefreshToken(user.id);
+      const newRefreshToken = await this.generateRefreshToken(user.id);
       return {
         accessToken: token,
-        refreshToken: refreshToken.refreshToken,
-        refreshTokenId: refreshToken.refreshTokenId,
+        refreshToken: newRefreshToken.refreshToken,
+        refreshTokenId: newRefreshToken.refreshTokenId,
       };
     }
 
@@ -43,6 +52,16 @@ export class AuthService {
       },
       false,
     );
+
+    await this.db.account.create({
+      data: {
+        providerId: profile.id,
+        provider: 'GOOGLE',
+        userId: newUser.id,
+        token: accessToken,
+        refreshToken: refreshToken,
+      },
+    });
 
     const token = await this.generateToken(newUser.id);
     const newRefreshToken = await this.generateRefreshToken(newUser.id);

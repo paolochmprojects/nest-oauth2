@@ -80,12 +80,12 @@ enum Provider {
 model Account {
   id           String   @id @default(uuid())
   userId       String   @unique
-  type         Provider
+  provider     Provider
   providerId   String
   user         User?    @relation(fields: [userId], references: [id])
   token        String
   refreshToken String?
-  expiresAt    DateTime @default(now())
+  createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
 
