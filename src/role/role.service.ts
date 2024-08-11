@@ -17,7 +17,9 @@ export class RoleService {
   }
 
   async findAll(): Promise<Role[]> {
-    return this.db.role.findMany();
+    return this.db.role.findMany({
+      include: { RolePermission: { include: { permission: true } } },
+    });
   }
 
   async findByName(name: string, raiseError = true): Promise<Role | null> {
@@ -31,7 +33,10 @@ export class RoleService {
   }
 
   async findById(id: string, raiseError = true): Promise<Role | null> {
-    const role = await this.db.role.findUnique({ where: { id } });
+    const role = await this.db.role.findUnique({
+      where: { id },
+      include: { RolePermission: { include: { permission: true } } },
+    });
 
     if (!role && raiseError) {
       throw new BadRequestException('Role not found');
