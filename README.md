@@ -24,7 +24,7 @@
 
 ## Description
 
-This repo is an example of how tu use Passport and NestJS (Google auth).
+This repo is an example of how tu use Passport and NestJS (Google auth) and basic roles and permissions system to manage resources in your app.
 
 ## Installation
 
@@ -73,7 +73,7 @@ $ npm run test:cov
 
 ## Api documentation
 
-[http://localhost:3000/api/](http://localhost:3000/api/) if port set defaults to 3000 or you can set it in .env file.
+Visit [api documentation](http://localhost:3000/api/) if port set defaults to 3000 or you can set it in .env file. make sure app is running.
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
